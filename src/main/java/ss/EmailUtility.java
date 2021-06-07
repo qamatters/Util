@@ -1,24 +1,12 @@
 package ss;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import javax.mail.*;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.search.SubjectTerm;
+import java.io.*;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.mail.Flags;
-import javax.mail.Folder;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Store;
-import javax.mail.search.SubjectTerm;
 
 
 
@@ -88,6 +76,7 @@ public class EmailUtility {
         folder = store.getFolder(emailFolder.getText());
         folder.open(Folder.READ_WRITE);
     }
+
 
 
 
@@ -212,6 +201,50 @@ public class EmailUtility {
         }
         return allMatches;
     }
+
+    /**
+     * Returns the count of all attachments from an email message with the linkText specified
+     */
+    public int getCountOfAttachmentsFromMessage(Message message)
+            {
+        int count = 0;
+        try {
+            Object object = message.getContent();
+            if (object instanceof Multipart) {
+                Multipart parts = (Multipart) object;
+                for (int i = 0; i < parts.getCount(); ++i) {
+                    MimeBodyPart part = (MimeBodyPart) parts.getBodyPart(i);
+                    if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition()))
+                        ++count;
+                }
+            }
+        } catch (IOException | MessagingException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public void saveAttachments(Message msg) throws Exception {
+            if (msg.getContent() instanceof Multipart) {
+                Multipart multipart = (Multipart) msg.getContent();
+
+                for (int i = 0; i < multipart.getCount(); i++) {
+                    Part part = multipart.getBodyPart(i);
+                    String disposition = part.getDisposition();
+
+                    if ((disposition != null) &&
+                            ((disposition.equalsIgnoreCase(Part.ATTACHMENT) ||
+                                    (disposition.equalsIgnoreCase(Part.INLINE))))) {
+                        MimeBodyPart mimeBodyPart = (MimeBodyPart) part;
+                        String fileName = mimeBodyPart.getFileName();
+
+                        File fileToSave = new File(fileName);
+                        mimeBodyPart.saveFile(fileToSave);
+                    }
+                }
+            }
+    }
+
 
     private Map<String, Integer> getStartAndEndIndices(int max) throws MessagingException {
         int endIndex = getNumberOfMessages();
