@@ -1,9 +1,14 @@
 package ss;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
+
 import javax.mail.*;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.search.SubjectTerm;
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,6 +21,7 @@ import java.util.regex.Pattern;
 public class EmailUtility {
 
     private Folder folder;
+    private String folderPath;
 
     public enum EmailFolder {
         INBOX("INBOX"),
@@ -71,7 +77,6 @@ public class EmailUtility {
         Session session = Session.getInstance(props);
         Store store = session.getStore("imaps");
         store.connect(server, username, password);
-
 
         folder = store.getFolder(emailFolder.getText());
         folder.open(Folder.READ_WRITE);
@@ -225,6 +230,12 @@ public class EmailUtility {
     }
 
     public void saveAttachments(Message msg) throws Exception {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
+        LocalDateTime now = LocalDateTime.now();
+        String currentDateTime = dtf.format(now);
+        String currentDir = System.getProperty("user.dir");
+        folderPath= currentDir + "/Reports/" + "TestCaseExecution_" + currentDateTime;
+        new File(folderPath).mkdirs();
             if (msg.getContent() instanceof Multipart) {
                 Multipart multipart = (Multipart) msg.getContent();
 
@@ -237,14 +248,31 @@ public class EmailUtility {
                                     (disposition.equalsIgnoreCase(Part.INLINE))))) {
                         MimeBodyPart mimeBodyPart = (MimeBodyPart) part;
                         String fileName = mimeBodyPart.getFileName();
-
-                        File fileToSave = new File(fileName);
+                        File fileToSave = new File(folderPath + "/" + fileName);
                         mimeBodyPart.saveFile(fileToSave);
                     }
                 }
             }
+            validateTextInPDF("ReactJS", folderPath, "Resume-React");
     }
 
+    public void validateTextInPDF(String text, String folderPath, String pdfFileName) throws IOException {
+        File actualPDFFile = new File(folderPath +"/" + pdfFileName+ ".pdf" );
+        if(actualPDFFile.exists()) {
+            FileInputStream Actual_PDF = new FileInputStream(new File(String.valueOf(actualPDFFile)));
+            PDDocument Actual_PDF_1;
+            Actual_PDF_1 = PDDocument.load(Actual_PDF);
+            String pdfContent = new PDFTextStripper().getText(Actual_PDF_1);
+            System.out.println(pdfContent);
+            if(pdfContent.contains(text)) {
+                System.out.println(text + " Exist in the resume" );
+            } else {
+                System.out.println(text + " does not Exist in the resume" );
+            }
+        } else
+            System.out.println(pdfFileName + " PDF File Does not Exists");
+
+    }
 
     private Map<String, Integer> getStartAndEndIndices(int max) throws MessagingException {
         int endIndex = getNumberOfMessages();
