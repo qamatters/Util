@@ -84,7 +84,6 @@ public class EmailUtility {
 
 
 
-
     //************* GET EMAIL PROPERTIES *******************
 
     public static String getEmailAddressFromProperties(){
