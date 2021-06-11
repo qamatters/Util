@@ -1,3 +1,7 @@
+package ss;
+
+import org.apache.commons.codec.binary.Base64;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -9,10 +13,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-import org.apache.commons.codec.binary.Base64;
 
-
-public class encrypt {
+public class Encrypt {
     private static String CIPHER_ALGORITHM_AES = "AES/ECB/PKCS5Padding";
     private static String UTF_8 = "UTF-8";
     private static String AES_ALGORITHM = "AES";
@@ -21,22 +23,10 @@ public class encrypt {
     private static byte[] key;
     private static MessageDigest sha;
 
-    public static void main(String[] args) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException {
-
-        String StringToEncrypt = "deepak";
-        String myKey = "Auto";
-        String encryptedString = encryptString(StringToEncrypt, myKey);
-        System.out.println("Encrypted string is :" + encryptedString);
-        String actualStringAfterDecrypt = decryptedString(encryptedString, myKey);
-        System.out.println("Decrypted string is: " + actualStringAfterDecrypt);
-
-    }
-
-    public static void setKey(String mmykey) {
+    public static void setKey(String mykey) {
         {
-            MessageDigest messageDigest = null;
             try {
-                key = mmykey.getBytes(UTF_8);
+                key = mykey.getBytes(UTF_8);
                 sha = MessageDigest.getInstance(CIPHER_ALGORITHM_SHA);
                 key = sha.digest(key);
                 key = Arrays.copyOf(key, 16);
