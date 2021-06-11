@@ -3,36 +3,36 @@ package ss;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.mail.*;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.search.SubjectTerm;
 import java.io.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-
 /**
  * Utility for interacting with an Email application
  */
 public class EmailUtility {
-
     private Folder folder;
     private String folderPath;
+    Encrypt encrypt = new Encrypt();
 
     public enum EmailFolder {
         INBOX("INBOX"),
         SPAM("SPAM");
-
         private String text;
-
         private EmailFolder(String text){
             this.text = text;
         }
-
         public String getText() {
             return text;
         }
@@ -42,7 +42,7 @@ public class EmailUtility {
      * Uses email.username and email.password properties from the properties file. Reads from Inbox folder of the email application
      * @throws MessagingException
      */
-    public EmailUtility() throws MessagingException {
+    public EmailUtility() throws MessagingException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         this(EmailFolder.INBOX);
     }
 
@@ -51,11 +51,33 @@ public class EmailUtility {
      * @param emailFolder Folder in email application to interact with
      * @throws MessagingException
      */
-    public EmailUtility(EmailFolder emailFolder) throws MessagingException {
-        this(getEmailUsernameFromProperties(),
-                getEmailPasswordFromProperties(),
-                getEmailServerFromProperties(),
-                emailFolder);
+    public EmailUtility(EmailFolder emailFolder) throws MessagingException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        Properties props = System.getProperties();
+        try {
+            props.load(new FileInputStream(new File("src//main//resources//email.properties")));
+        } catch(Exception e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
+        Session session = Session.getInstance(props);
+        Store store = session.getStore("imaps");
+        String serverName = getEmailServerFromProperties();
+        String Emailusername = getEmailUsernameFromProperties();
+        String emailPassword = getEmailPasswordFromProperties();
+        store.connect(serverName,Emailusername, emailPassword  );
+        folder = store.getFolder(emailFolder.getText());
+        folder.open(Folder.READ_WRITE);
+    }
+
+    public static Properties loadPropertiesFile () {
+        Properties props = System.getProperties();
+        try {
+            props.load(new FileInputStream(new File("src//main//resources//email.properties")));
+        } catch(Exception e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
+        return props;
     }
 
     /**
@@ -82,7 +104,13 @@ public class EmailUtility {
         folder.open(Folder.READ_WRITE);
     }
 
-
+public static String generateRandomKey()  {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
+        LocalDateTime now = LocalDateTime.now();
+        String currentDateTime = dtf.format(now);
+        String mykey =  "TestCaseExecution_" + currentDateTime;
+        return mykey;
+}
 
     //************* GET EMAIL PROPERTIES *******************
 
@@ -90,12 +118,19 @@ public class EmailUtility {
         return System.getProperty("email.address");
     }
 
-    public static String getEmailUsernameFromProperties(){
-        return System.getProperty("email.username");
+    public static String getEmailUsernameFromProperties() throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        Properties Prop = loadPropertiesFile( );
+        return Encrypt.decryptedString(String.valueOf(Prop.get("username")), "Username");
     }
 
-    public static String getEmailPasswordFromProperties(){
-        return System.getProperty("email.password");
+    public static String getEmailPasswordFromProperties() throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        Properties Prop = loadPropertiesFile( );
+        return Encrypt.decryptedString((String) Prop.get("password"), "Password");
+    }
+
+    public static String getEmailServerFromProperties(){
+        Properties Prop = loadPropertiesFile( );
+        return (String) Prop.get("server");
     }
 
     public static String getEmailProtocolFromProperties(){
@@ -105,12 +140,6 @@ public class EmailUtility {
     public static int getEmailPortFromProperties(){
         return Integer.parseInt(System.getProperty("email.port"));
     }
-
-    public static String getEmailServerFromProperties(){
-        return System.getProperty("email.server");
-    }
-
-
 
 
     //************* EMAIL ACTIONS *******************
