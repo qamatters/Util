@@ -1,10 +1,11 @@
-package selenium.pages;
+package selenium.pages.gitHub;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import selenium.core.DriverFactory;
+import selenium.core.drivers.DriverFactory;
+import selenium.core.elements.Element;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -13,14 +14,17 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
 public class githubCopyClipBoard extends DriverFactory {
+    public static Element buttonElement = new Element(".position-relative > .btn-primary",Element.LocatorType.CSS_SELECTOR);
+    public static Element clipButtonElement = new Element("div:nth-child(2) > .input-group .octicon-clippy",Element.LocatorType.CSS_SELECTOR);
+
     public static void validateClipBoardCopy() throws InterruptedException, IOException, UnsupportedFlavorException {
-        if (driver.findElement(By.cssSelector(".position-relative > .btn-primary")).isDisplayed()) {
-            driver.findElement(By.cssSelector(".position-relative > .btn-primary")).click();
+        if (buttonElement.isDisplayed()) {
+            buttonElement.click();
             WebDriverWait wait = new WebDriverWait(driver, 30);
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div:nth-child(2) > .input-group .octicon-clippy")));
-            if (driver.findElement(By.cssSelector("div:nth-child(2) > .input-group .octicon-clippy")).isDisplayed()) {
+            if (clipButtonElement.isDisplayed()) {
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                driver.findElement(By.cssSelector("div:nth-child(2) > .input-group .octicon-clippy")).click();
+                clipButtonElement.click();
                 Thread.sleep(2000);
                 Object dataFromCopyURLFeature = clipboard.getData(DataFlavor.stringFlavor);
                 System.out.println("Copied data is " + dataFromCopyURLFeature);
