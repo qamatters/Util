@@ -23,12 +23,10 @@ public class clipBoardCopySeleniumTest {
     public void testClipBoardFeature() throws IOException, InterruptedException, UnsupportedFlavorException {
         seleniumBase.launchWebPage("https://github.com/qamatters/KarateDemo");
         githubCopyClipBoard.validateClipBoardCopy();
-
     }
 
     @AfterTest
     public void quit() {
         driver.QuitDriver();
-
     }
 }

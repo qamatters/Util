@@ -58,7 +58,6 @@ public class Element extends DriverFactory {
         XPATH,
         CSS_SELECTOR,
         TAG_NAME;
-
         LocatorType() {
 
         }

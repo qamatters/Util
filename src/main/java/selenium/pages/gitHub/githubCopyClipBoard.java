@@ -13,9 +13,10 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
+import static selenium.locators.gitbub.githubRepoPage.buttonElement;
+import static selenium.locators.gitbub.githubRepoPage.clipButtonElement;
+
 public class githubCopyClipBoard extends DriverFactory {
-    public static Element buttonElement = new Element(".position-relative > .btn-primary",Element.LocatorType.CSS_SELECTOR);
-    public static Element clipButtonElement = new Element("div:nth-child(2) > .input-group .octicon-clippy",Element.LocatorType.CSS_SELECTOR);
 
     public static void validateClipBoardCopy() throws InterruptedException, IOException, UnsupportedFlavorException {
         if (buttonElement.isDisplayed()) {
