@@ -4,6 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import selenium.core.drivers.DriverFactory;
 
+import java.util.List;
+
 public class Element extends DriverFactory {
     protected String locator = null;
     public By by = null;
@@ -19,6 +21,10 @@ public class Element extends DriverFactory {
 
     public WebElement getElement() {
         return driver.findElement(this.by);
+    }
+
+    public List<WebElement> getElements() {
+        return driver.findElements(this.by);
     }
 
     public boolean isDisplayed() {

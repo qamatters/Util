@@ -1,22 +1,40 @@
 package selenium.pages.gitHub;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import selenium.core.drivers.DriverFactory;
-import selenium.core.elements.Element;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
-import static selenium.locators.gitbub.githubRepoPage.buttonElement;
-import static selenium.locators.gitbub.githubRepoPage.clipButtonElement;
+import static selenium.locators.gitbub.githubRepoPage.*;
 
-public class githubCopyClipBoard extends DriverFactory {
+public class githubRepoPage extends DriverFactory {
+
+
+    public static List<String>  AllOptionsInRepoPage() throws InterruptedException {
+        List<String> expectedAllOptions = new LinkedList<>();
+        Thread.sleep(2000);
+     List<WebElement> elements  = allOptionsInRepoPage.getElements();
+     System.out.println("size: " + elements.size());
+     for(WebElement element : elements) {
+         if(element.isDisplayed()) {
+             String elementText = element.getText();
+             expectedAllOptions.add(elementText);
+         }
+     }
+     return expectedAllOptions;
+    }
+
 
     public static void validateClipBoardCopy() throws InterruptedException, IOException, UnsupportedFlavorException {
         if (buttonElement.isDisplayed()) {
