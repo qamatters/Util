@@ -8,7 +8,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 public class DriverFactory {
     public static WebDriver driver;
     private static String chromeDriverPathForMac = "src//main//resources//chromedriver_chrome_91//chromedrivermac";
-    private static String chromeDriverPathForWindows = "src\\main\\resources\\chromedriver_chrome_91\\chromedriver.exe";
+    private static String chromeDriverPathForWindows = "src\\main\\resources\\chromedriver_chrome_93\\chromedriver.exe";
 
     public void DriverConfiguration() {
         String osName = System.getProperty("os.name");

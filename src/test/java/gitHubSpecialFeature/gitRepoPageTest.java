@@ -25,7 +25,6 @@ public class gitRepoPageTest {
     @Test
     public void testDefaultOptions() throws InterruptedException {
     List<String> expectedOptions = new LinkedList<>();
-
     expectedOptions.add("Code");
     expectedOptions.add("Issues");
     expectedOptions.add("Pull requests");
