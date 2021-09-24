@@ -14,21 +14,21 @@ import java.io.IOException;
 public class clipBoardCopySeleniumTest {
     DriverFactory driver = new DriverFactory();
 
-    @BeforeTest
-    public void initialize() {
-        driver.DriverConfiguration();
-    }
-
-    @Test
-    public void testClipBoardFeature() throws IOException, InterruptedException, UnsupportedFlavorException {
-        seleniumBase.launchWebPage("https://github.com/qamatters/KarateDemo");
-        githubRepoPage.validateClipBoardCopy();
-    }
-
-
-
-    @AfterTest
-    public void quit() {
-        driver.QuitDriver();
-    }
+//    @BeforeTest
+//    public void initialize() {
+//        driver.DriverConfiguration();
+//    }
+//
+//    @Test
+//    public void testClipBoardFeature() throws IOException, InterruptedException, UnsupportedFlavorException {
+//        seleniumBase.launchWebPage("https://github.com/qamatters/KarateDemo");
+//        githubRepoPage.validateClipBoardCopy();
+//    }
+//
+//
+//
+//    @AfterTest
+//    public void quit() {
+//        driver.QuitDriver();
+//    }
 }

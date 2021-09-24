@@ -12,19 +12,19 @@ public class closeDialog {
 
     DriverFactory driver = new DriverFactory();
 
-    @BeforeTest
-    public void initialize() {
-        driver.DriverConfiguration();
-        seleniumBase.launchWebPage("https://github.com/qamatters/KarateDemo");
-    }
-
-    @Test
-    public void testDefaultOptions() throws InterruptedException {
-        githubRepoPage.waitForElementToDisappear();
-    }
-    @AfterTest
-    public void quit() {
-        driver.QuitDriver();
-    }
+//    @BeforeTest
+//    public void initialize() {
+//        driver.DriverConfiguration();
+//        seleniumBase.launchWebPage("https://github.com/qamatters/KarateDemo");
+//    }
+//
+//    @Test
+//    public void testDefaultOptions() throws InterruptedException {
+//        githubRepoPage.waitForElementToDisappear();
+//    }
+//    @AfterTest
+//    public void quit() {
+//        driver.QuitDriver();
+//    }
 
 }
