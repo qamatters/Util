@@ -20,6 +20,11 @@
         </plugins>
     </build>
 
+    <properties>
+        <sonar.organization>qamatters-1</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    </properties>
+         
     <dependencies>
     <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
     <dependency>
